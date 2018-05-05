@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
     private int idQuestion;
     private Question[] questionBank;
+    Integer score = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         this.mPreviousButton = (Button) findViewById(R.id.previous_button);
         previousButtonListiner();
         this.mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
+        questionTextViewListiner();
     }
 
     private void trueButtonListiner(){
@@ -81,16 +83,28 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void questionTextViewListiner(){
+        this.mQuestionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nextQuestion();
+            }
+        });
+    }
     private void nextQuestion(){
         this.idQuestion = (this.idQuestion + 1) % this.questionBank.length;
         int nextQuestion = questionBank[this.idQuestion].getId();
         this.mQuestionTextView.setText(nextQuestion);
+        if(this.idQuestion == this.questionBank.length - 1){
+            Toast.makeText(this,"O seu placar final foi de : " + score.toString(),Toast.LENGTH_LONG).show();
+            this.score = 0;
+        }
     }
 
     private void previousQuestion(){
         int nextQuestion = 0;
         if(this.idQuestion == 0){
-            this.idQuestion = (questionBank.length - 1);
+            this.idQuestion = 0;
         }else{
             this.idQuestion = (this.idQuestion - 1) % this.questionBank.length;
             this.mQuestionTextView.setText(nextQuestion);
@@ -103,7 +117,9 @@ public class MainActivity extends AppCompatActivity {
         boolean realAnswer = this.questionBank[idQuestion].isAnswear();
         int result = (realAnswer == userAnswer)?
                 R.string.correct_answer : R.string.incorrect_answer;
-
+        if(result == R.string.correct_answer){
+            score++;
+        }
         Toast.makeText(this,result,Toast.LENGTH_LONG).show();
     }
 
