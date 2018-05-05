@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">geoQuiz</string>
+    <string name="correct_answer">Correct!</string>
+    <string name="incorrect_answer">Incorrect!</string>
+    <string name="true_button">True!</string>
+    <string name="false_button">False!</string>
+    <string name="next_button">Next ></string>
+    <string name="previous_button"> Back </string>
+    <string name="question_recife">Is Recife the capital of Pernambuco?</string>
+    <string name="question_Switzerland">Is Switzerland the best country to live? </string>
+    <string name="question_usa">Is NY the capital of U.S.A ? </string>
+    <string name="question_canada">Is Vancouver the capital of Canada?</string>
+    <string name="question_russia">Does Russia has the biggest territory of the world ?</string>
+    <string name="question_brazil">Is the population of Brazil some about 20 million people ?</string>
+    <string name="question_italy">Is the Italy known from the cookies they made ?</string>
+    <string name="question_maple">Is the maple a national symbol of some country?</string>
+    <string name="question_argentina">Does Argentina belongs to South America?</string>
+    <string name="question_africa">Is Mozambique part a of Africa ?</string>
+</resources>
