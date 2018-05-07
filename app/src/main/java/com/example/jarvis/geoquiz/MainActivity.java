@@ -1,5 +1,7 @@
 package com.example.jarvis.geoquiz;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +18,11 @@ public class MainActivity extends AppCompatActivity {
     private Button mFalseButton;
     private Button mNextButton;
     private Button mPreviousButton;
+    private Button mCheatButton;
+    private boolean mIsCheater;
+    private static final String TAG = "QuizActivity";
+    private static final String KEY_INDEX = "index";
+    private static final int REQUEST_CODE_CHEAT = 0;
     private TextView mQuestionTextView;
     private int idQuestion;
     private Question[] questionBank;
@@ -30,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         int question = questionBank[idQuestion].getId();
         mQuestionTextView.setText(question);
+
     }
 
     private void buttonsInstance(){
@@ -43,6 +51,23 @@ public class MainActivity extends AppCompatActivity {
         previousButtonListiner();
         this.mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
         questionTextViewListiner();
+        this.mCheatButton = (Button) findViewById(R.id.cheat_button);
+        cheatButtonListiner();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode,
+                                    int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            if (data == null) {
+                return;
+            }
+            mIsCheater =
+                    CheatActivity.wasAnswerShown(data);
+        }
     }
 
     private void trueButtonListiner(){
@@ -70,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 nextQuestion();
+                mIsCheater = false;
             }
         });
     }
@@ -87,12 +113,27 @@ public class MainActivity extends AppCompatActivity {
         this.mQuestionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nextQuestion();
+                Intent intent = new Intent(MainActivity.this,
+                        CheatActivity.class);
+                startActivity(intent);
             }
         });
     }
+
+    private void  cheatButtonListiner(){
+        this.mCheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean answerIsTrue = questionBank[idQuestion].isAnswear();
+                Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
+                startActivityForResult(intent, REQUEST_CODE_CHEAT);
+            }
+        });
+    }
+
     private void nextQuestion(){
         this.idQuestion = (this.idQuestion + 1) % this.questionBank.length;
+        mIsCheater = false;
         int nextQuestion = questionBank[this.idQuestion].getId();
         this.mQuestionTextView.setText(nextQuestion);
         if(this.idQuestion == this.questionBank.length - 1){
@@ -102,25 +143,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void previousQuestion(){
-        int nextQuestion = 0;
+        mIsCheater = false;
         if(this.idQuestion == 0){
-            this.idQuestion = 0;
+            return;
         }else{
             this.idQuestion = (this.idQuestion - 1) % this.questionBank.length;
-            this.mQuestionTextView.setText(nextQuestion);
         }
-        nextQuestion = questionBank[this.idQuestion].getId();
+        int nextQuestion = questionBank[this.idQuestion].getId();
         this.mQuestionTextView.setText(nextQuestion);
     }
 
-    private void checkAnswer(boolean userAnswer){
-        boolean realAnswer = this.questionBank[idQuestion].isAnswear();
-        int result = (realAnswer == userAnswer)?
-                R.string.correct_answer : R.string.incorrect_answer;
-        if(result == R.string.correct_answer){
-            score++;
+    private void checkAnswer(boolean userAnswer) {
+        boolean answerIsTrue = questionBank[idQuestion].isAnswear();
+        int messageResId = 0;
+        if (mIsCheater) {
+            messageResId = R.string.judgment_string;
+        } else {
+            if (userAnswer == answerIsTrue) {
+                messageResId = R.string.correct_answer;
+                score++;
+            } else {
+                messageResId = R.string.incorrect_answer;
+            }
         }
-        Toast.makeText(this,result,Toast.LENGTH_LONG).show();
+        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
     }
 
     private void createQuestionBank(){

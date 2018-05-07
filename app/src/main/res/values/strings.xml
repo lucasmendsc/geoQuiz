@@ -2,7 +2,10 @@
     <string name="app_name">geoQuiz</string>
     <string name="correct_answer">Correct!</string>
     <string name="incorrect_answer">Incorrect!</string>
-    <string name="score">O seu placar foi de  : </string>
+    <string name="cheat_question">Are you sure that you will cheat ?</string>
+    <string name="show_answer">Show the answer</string>
+    <string name="cheat_button">Cheat!</string>
+    <string name="judgment_string">Cheating is wrong</string>
     <string name="true_button">True!</string>
     <string name="false_button">False!</string>
     <string name="next_button">next</string>
